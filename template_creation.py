@@ -1,9 +1,9 @@
-# Cuts random tiles from pictures
+# Cuts random templates from images
 
 import random, os, time
 from PIL import Image
 
-dx = dy = 256
+dx = dy = 128
 tilesPerImage = 2
 
 INPATH = ('./storage/dataset/dataset1/')
@@ -27,4 +27,4 @@ for file in files:
 t = time.time()-t
 print("Done {} images in {:.2f}s".format(numOfImages, t))
 print("({:.1f} images per second)".format(numOfImages/t))
-print("({:.1f} tiles per second)".format(tilesPerImage*numOfImages/t)) 
+print("({:.1f} tiles per second)".format(tilesPerImage*numOfImages/t))
