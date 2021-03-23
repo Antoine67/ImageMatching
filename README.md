@@ -5,7 +5,7 @@ Bibliothèque utilisée : OpenCV
  pip install opencv_python==3.4.2.16 
  pip install opencv-contrib-python==3.4.2.16
  
- Implémentations :
+ ## Implémentations :
  
 [ ] SURF
 
@@ -20,7 +20,7 @@ Bibliothèque utilisée : OpenCV
 [ ] Template matching Normalized based
 
 
-Datasets :
+## Datasets :
 
 [ ] Grand jeu de données
 
@@ -32,6 +32,6 @@ Datasets :
 
 [ ]       "              zoom
 
-Analyse :
+## Analyse :
 
-[ ] ..
+[ ] TODO
