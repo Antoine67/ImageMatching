@@ -17,16 +17,16 @@ method_array['zoom'] = True
 method_array['blur'] = True
 method_array['noise'] = True
 
-folder_name = "test"
+folder_name = "dataset1_templates/256" #dataset folder name
 
 def createFolder(strpath):
    if(not path.isdir(strpath)):
     try:
         os.mkdir(strpath)
     except OSError:
-        print ("Creation of the directory failed")
+        print ("Creation of the directory failed" + strpath)
     else:
-        print ("Successfully created the directory")
+        print ("Successfully created the directory" + strpath)
         
 def add_noise(X_img, number):
     img = X_img[...,::-1]/255.0
