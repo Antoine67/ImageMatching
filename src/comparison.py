@@ -13,16 +13,28 @@ from TMCoeffNormed import TMCoeffNormedMethod
 
 img_folder_name = "dataset1"
 temp_folder_name = "dataset1_templates/128"
+output_folder = "../results/dataset1_128/"
 
 img_files = {}
 img_and_temp_file = {}
 
-#
+def create_folder(path):
+    try:
+        os.makedirs(path)
+    except OSError:
+        print ("Creation of the directory %s failed" % path)
+    else:
+        print ("Successfully created the directory %s" % path)
+        
+create_folder(output_folder)
+
+
+#On récupère tous les images (modèle) qu'on stocke dans un dictionnaire ...
 for file in os.listdir("../storage/dataset/" + img_folder_name):
     if file.endswith(".png") or file.endswith(".jpeg"):
         img_and_temp_file[file] = []
         
-# Add associated template        
+# ... et on y ajoute les templates associés     
 for file in os.listdir("../storage/dataset/" + temp_folder_name):
     if file.endswith(".png") or file.endswith(".jpeg"):
         for img_file in img_and_temp_file:
@@ -35,11 +47,7 @@ for file in os.listdir("../storage/dataset/" + temp_folder_name):
 
 
 
-s =  SIFTMethod()
-tm_coeff_normed = TMCoeffNormedMethod()
-
-
-feature_based = [s, tm_coeff_normed]
+feature_based = [ SIFTMethod(), TMCoeffNormedMethod()]
 out_csv_dict = {}
 
 for img_path_name in img_and_temp_file:
@@ -53,6 +61,8 @@ for img_path_name in img_and_temp_file:
         out_csv_dict[img_path + ' ' + temp_path ] = {} 
         
         for f_b in feature_based:
+            
+            #si le grayscale est activé sur la méthode on lit l'image grisée
             if(f_b.grayscale):
                 img_full = cv.imread(img_path,cv.IMREAD_GRAYSCALE)
                 img_temp = cv.imread(temp_path,cv.IMREAD_GRAYSCALE)
@@ -63,7 +73,8 @@ for img_path_name in img_and_temp_file:
             f_b.set_pictures(img_full, img_temp)
             key_f_b = f_b.name 
             
-            matches, execution_time = f_b.match()
+            out_path = output_folder + img_path_name[:-4] + "___"+temp_path_name[:-4] + key_f_b +".png"
+            matches, execution_time = f_b.match(out_path)
             
             out_csv_dict[img_path + ' ' + temp_path ][key_f_b] = {}
             out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['nb_matches']  = matches
@@ -71,7 +82,7 @@ for img_path_name in img_and_temp_file:
                
     
 
-
+# on écrit les résultats
 with open('../results/output.csv', 'w+', newline='') as csvfile:
     filewriter = csv.writer(csvfile, delimiter=',',
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)

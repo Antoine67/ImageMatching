@@ -15,10 +15,11 @@ class TMCoeffNormedMethod(GenericMethod):
         self.sift = cv.xfeatures2d_SIFT.create()
         
         
-    def match(self):
+    def match(self, output_write_path= None):
         start_time = time.time()
         img1 = self.img_temp
         img2 = self.img_full
+        img3 = img2.copy() # on copie l'image originale 
         
         w, h = img1.shape[::-1]
         
@@ -33,6 +34,17 @@ class TMCoeffNormedMethod(GenericMethod):
         for pt in zip(*loc[::-1]):        
             sensitivity = 100
             f.add((round(pt[0]/sensitivity), round(pt[1]/sensitivity)))
+            if(output_write_path):
+                cv.rectangle(img3, pt, (pt[0] + w, pt[1] + h), (0,255,255), 2)  
+            
+        
+        # Draw first 10 matches.
+        if(output_write_path):
+            plt.imshow(img3),
+            plt.show()
+            cv.imwrite(output_write_path,img3)
+            
+            
         
         
         

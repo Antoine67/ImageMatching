@@ -14,7 +14,7 @@ class SIFTMethod(GenericMethod):
         self.sift = cv.xfeatures2d_SIFT.create()
         
         
-    def match(self):
+    def match(self, output_write_path= None):
         start_time = time.time()
         img1 = self.img_temp
         img2 = self.img_full
@@ -37,9 +37,11 @@ class SIFTMethod(GenericMethod):
         #TODO Add threshold
         
         # Draw first 10 matches.
-        #img3 = cv.drawMatches(img1,kp1,img2,kp2,matches[:10],None,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-        #plt.imshow(img3),
-        #plt.show()
+        if(output_write_path):
+            img3 = cv.drawMatches(img1,kp1,img2,kp2,matches[:10],None,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+            plt.imshow(img3),
+            plt.show()
+            cv.imwrite(output_write_path,img3)
         
         #return nb_matches, execution_time
         return len(matches), time.time() - start_time
