@@ -2,15 +2,16 @@ from generic_method import GenericMethod
 import cv2 as cv
 import matplotlib.pyplot as plt
 import time
+import numpy as np
 
 
 
 class TMCoeffNormedMethod(GenericMethod):
     
-    tm_method = cv.TM_CCOEFF
+    tm_method = cv.TM_CCOEFF_NORMED
     
     def __init__(self):
-        self.name= "TM_CCOEFF" 
+        self.name= "TM_CCOEFF_NORMED" 
         self.sift = cv.xfeatures2d_SIFT.create()
         
         
@@ -19,15 +20,21 @@ class TMCoeffNormedMethod(GenericMethod):
         img1 = self.img_temp
         img2 = self.img_full
         
+        w, h = img1.shape[::-1]
+        
         res = cv.matchTemplate(img2,img1,self.tm_method)
-        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
+        #min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
         
-        #TODO Add threshold
+        threshold = 0.8
+        loc = np.where( res >= threshold)
         
-        # Draw first 10 matches.
-        #img3 = cv.drawMatches(img1,kp1,img2,kp2,matches[:10],None,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-        #plt.imshow(img3),
-        #plt.show()
+        f = set()
+        
+        for pt in zip(*loc[::-1]):        
+            sensitivity = 100
+            f.add((round(pt[0]/sensitivity), round(pt[1]/sensitivity)))
+        
+        
         
         #return nb_matches, execution_time
-        return len(matches), time.time() - start_time
+        return len(f), time.time() - start_time

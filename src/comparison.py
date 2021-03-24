@@ -10,7 +10,7 @@ from SIFT import SIFTMethod
 from TMCoeffNormed import TMCoeffNormedMethod
 
 
-files = [["../graf1.png","../word.png"],["../word.png","../graf1.png"]]
+files = [["../storage/dataset/dataset1/img_1.png","../storage/dataset/dataset1_templates/128/img_1_001.png"]]
 
 
 s =  SIFTMethod()
@@ -26,15 +26,18 @@ for file_list in files:
     file = file_list[0]
     file2 = file_list[1]
     
+    
+    
     img_full = cv.imread(file,cv.IMREAD_GRAYSCALE)
     img_temp = cv.imread(file2,cv.IMREAD_GRAYSCALE)
-    s.set_pictures(img_full, img_temp)
+       
+    
     out_csv_dict[file] = {} 
     
     
     
     for f_b in feature_based:
-        
+        f_b.set_pictures(img_full, img_temp)
         key_f_b = f_b.name 
         
         matches, execution_time = f_b.match()
@@ -48,7 +51,7 @@ for file_list in files:
     
 
 
-with open('../results/output-feature-based.csv', 'w+', newline='') as csvfile:
+with open('../results/output.csv', 'w+', newline='') as csvfile:
     filewriter = csv.writer(csvfile, delimiter=',',
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
     
