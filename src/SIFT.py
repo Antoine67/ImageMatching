@@ -7,6 +7,8 @@ import time
 
 class SIFTMethod(GenericMethod):
     
+    grayscale = True
+    
     def __init__(self):
         self.name= "SIFT" 
         self.sift = cv.xfeatures2d_SIFT.create()

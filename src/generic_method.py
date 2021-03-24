@@ -5,8 +5,8 @@ class GenericMethod:
     img_full = None
     img_temp = None
     
-    accuracy = -1.0
-    
+    grayscale = False
+        
     
     def set_pictures(self, full, template):
         self.img_full = full
