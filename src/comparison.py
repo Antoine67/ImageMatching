@@ -73,7 +73,7 @@ for img_path_name in img_and_temp_file:
             f_b.set_pictures(img_full, img_temp)
             key_f_b = f_b.name 
             
-            out_path = output_folder + img_path_name[:-4] + "___"+temp_path_name[:-4] + key_f_b +".png"
+            out_path = output_folder + img_path_name[:-4] + "_"+temp_path_name[:-4] +"_"+ key_f_b +".png"
             matches, execution_time = f_b.match(out_path)
             
             out_csv_dict[img_path + ' ' + temp_path ][key_f_b] = {}
