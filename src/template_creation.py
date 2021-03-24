@@ -6,8 +6,8 @@ from PIL import Image
 dx = dy = 128
 tilesPerImage = 2
 
-INPATH = ('./storage/dataset/dataset1/')
-OUTPATH = ('./storage/dataset/dataset1_templates/'+str(dx))
+INPATH = ('../storage/dataset/dataset1/')
+OUTPATH = ('../storage/dataset/dataset1_templates/'+str(dx))
 
 files = os.listdir(INPATH)
 numOfImages = len(files)

@@ -63,46 +63,46 @@ def add_noise(X_img, number):
     return_image = return_image.astype(np.uint8) 
     return return_image 
 
-createFolder("storage/dataset_alter/" + folder_name)
+createFolder("../storage/dataset_alter/" + folder_name)
 
-for file in os.listdir("storage/dataset/" + folder_name):
+for file in os.listdir("../storage/dataset/" + folder_name):
     if file.endswith(".png") or file.endswith(".jpeg"):
         
-        image = cv.imread("storage/dataset/" + folder_name + "/" + str(file))
+        image = cv.imread("../storage/dataset/" + folder_name + "/" + str(file))
         
         
         if(method_array['noise']):
             #noise
-            createFolder("storage/dataset_alter/" + folder_name + "/noise")
+            createFolder("../storage/dataset_alter/" + folder_name + "/noise")
             
             noise = add_noise(image, 3)
             
-            cv.imwrite("storage/dataset_alter/" + folder_name + "/noise/" + str(file), noise)
+            cv.imwrite("../storage/dataset_alter/" + folder_name + "/noise/" + str(file), noise)
         
         
         if(method_array['rotation']):
             #rotation
-            createFolder("storage/dataset_alter/" + folder_name + "/rotation")
+            createFolder("../storage/dataset_alter/" + folder_name + "/rotation")
             
             rows,cols,etc = image.shape
             M = cv.getRotationMatrix2D(((cols-1)/2.0,(rows-1)/2.0),45,1)
             rotation = cv.warpAffine(image,M,(cols,rows))
             
-            cv.imwrite("storage/dataset_alter/" + folder_name + "/rotation/" + str(file), rotation)
+            cv.imwrite("../storage/dataset_alter/" + folder_name + "/rotation/" + str(file), rotation)
         
         
         if(method_array['zoom']):
             #zoom
-            createFolder("storage/dataset_alter/" + folder_name + "/zoom")
+            createFolder("../storage/dataset_alter/" + folder_name + "/zoom")
     
             zoom = cv.resize(image,None,fx=0.5, fy=0.5, interpolation = cv.INTER_CUBIC)
-            cv.imwrite("storage/dataset_alter/" + folder_name + "/zoom/" + str(file), zoom)
+            cv.imwrite("../storage/dataset_alter/" + folder_name + "/zoom/" + str(file), zoom)
         
         
         if(method_array['blur']):
             #blur
-            createFolder("storage/dataset_alter/" + folder_name + "/blur")
+            createFolder("../storage/dataset_alter/" + folder_name + "/blur")
             
             blur = cv.blur(image,(10,10))        
-            cv.imwrite("storage/dataset_alter/" + folder_name + "/blur/" + str(file), blur)
+            cv.imwrite("../storage/dataset_alter/" + folder_name + "/blur/" + str(file), blur)
 
