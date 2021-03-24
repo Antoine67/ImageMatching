@@ -13,8 +13,6 @@ files = ["graf1.png"]
 
 
 
-
-
 sift = cv.xfeatures2d_SIFT.create()
 surf = cv.xfeatures2d_SURF.create()
 orb = orb = cv.ORB_create()
@@ -44,17 +42,6 @@ for file in files:
     
 
 
-with open('results/output-feature-based.csv', 'w+', newline='') as csvfile:
-    filewriter = csv.writer(csvfile, delimiter=',',
-                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    for key in out_csv_dict: # filenames
-        for key2 in out_csv_dict[key]: # methods (SURF, SIFT,..)
-            filewriter.writerow([str(key), str(key2), str(out_csv_dict[key][key2]['nb_keypoints'])])
-           #print(str(out_csv_dict[key][key2]['nb_keypoints']))
-
-
-
-#cv.imshow("NORMAL",image)
-
-#cv.waitKey(0)
-#cv.destroyAllWindows()
+            
+     
+            

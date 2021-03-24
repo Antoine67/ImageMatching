@@ -1,0 +1,3 @@
+Picture,Method,Match count,Execution time (s)
+../graf1.png,SIFT,62,0.23557829856872559
+../word.png,SIFT,2663,0.23199748992919922
