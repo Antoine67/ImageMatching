@@ -14,10 +14,12 @@ from TMNormedCCorr import TMNormedCCorrMethod
 from TMSquareDiff import TMSquareDiffMethod
 from CustomTM import CustomTMMethod
 
-img_folder_name = "dataset/dataset1"
-temp_folder_name = "dataset_alter/dataset1_templates/256/blur"
-output_folder = "../results/dataset1_blur_template_256/"
-output_name = "output_blur_template_256"
+img_folder_name = "dataset_alter/dataset1/noise"
+temp_folder_name = "dataset/dataset1_templates/128"
+output_folder = "../results/dataset1_noise_128/"
+output_name = "output_noise_128"
+
+match_valid = True # True pour rentrer directement la validation du match, False pour le faire manuellement ultérieurement
 
 img_files = {}
 img_and_temp_file = {}
@@ -62,8 +64,9 @@ for img_path_name in img_and_temp_file:
         img_path = "../storage/" + img_folder_name +'/'+ img_path_name
         temp_path = "../storage/" + temp_folder_name +'/'+  temp_path_name
         
-        print('Matching files : img -> ' + img_path + ' & template -> ' + temp_path)
-    
+        #print('Matching files : img -> ' + img_path + ' & template -> ' + temp_path)
+        print("NEXT TEMPLATE")
+        
         out_csv_dict[img_path + ' ' + temp_path ] = {} 
         
         for f_b in feature_based:
@@ -85,6 +88,17 @@ for img_path_name in img_and_temp_file:
             out_csv_dict[img_path + ' ' + temp_path ][key_f_b] = {}
             #out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['nb_matches']  = matches
             out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['execution_time']  = execution_time
+            
+            if(match_valid) :
+                value = input("Valid ? (0/1):\n")
+ 
+                valid = value.startswith("1") 
+                print(f'You entered {valid}')
+                out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['valid_match']  = valid
+            else:
+                out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['valid_match']  = None
+
+                    
                
     
 
@@ -99,6 +113,7 @@ with open('../results/'+output_name+'.csv', 'w+', newline='') as csvfile:
                 "Method",
                 #"Match count",
                 "Execution time (s)"
+                "Valid match"
             ])
     itera = 0
     for key in out_csv_dict: # filenames
@@ -109,7 +124,8 @@ with open('../results/'+output_name+'.csv', 'w+', newline='') as csvfile:
                 str(key),
                 str(key2),
                 #str(out_csv_dict[key][key2]['nb_matches']),
-                str(out_csv_dict[key][key2]['execution_time'])
+                str(out_csv_dict[key][key2]['execution_time']),
+                str(out_csv_dict[key][key2]['valid_match'])
             ])
 
 
