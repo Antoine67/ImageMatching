@@ -112,7 +112,7 @@ with open('../results/'+output_name+'.csv', 'w+', newline='') as csvfile:
                 "Picture",
                 "Method",
                 #"Match count",
-                "Execution time (s)"
+                "Execution time (s)",
                 "Valid match"
             ])
     itera = 0
