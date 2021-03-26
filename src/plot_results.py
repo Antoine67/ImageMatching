@@ -4,7 +4,7 @@ import csv
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-df = pd.read_csv('../results/output.csv',header=0, dtype=object,sep=';')
+df = pd.read_csv('../results/output_blur_256.csv',header=0, dtype=object,sep=';')
 #print (df)
 
 df['Execution time (s)'] = df['Execution time (s)'].astype(float)
@@ -37,4 +37,4 @@ def plot_data(df, x_label, y_label, graph_title):
 
     #print(data_per_method)
 
-plot_data(df, 'Image number', 'Execution time (s)',"Execution time comparison (Normal picture)" )
+plot_data(df, 'Image number', 'Execution time (s)',"Execution time comparison (Blur 256*256px template )" )

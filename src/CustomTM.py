@@ -58,9 +58,13 @@ class CustomTMMethod(GenericMethod):
                 bestMatch = match
             
         if(output_write_path):
-            plt.imshow(bestMatch[1]),
-            plt.show()
-            cv.imwrite(output_write_path,bestMatch[1])
+            if(bestMatch):
+                plt.imshow(bestMatch[1]),
+                plt.show()
+                cv.imwrite(output_write_path,bestMatch[1])
+            else:
+                print('no match found for ', output_write_path)
+                cv.imwrite(output_write_path, img)
         
         #return nb_matches, execution_time
         return time.time() - start_time

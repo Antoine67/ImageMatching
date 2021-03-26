@@ -12,10 +12,12 @@ from ORB import ORBMethod
 from TMCoeffNormed import TMCoeffNormedMethod
 from TMNormedCCorr import TMNormedCCorrMethod
 from TMSquareDiff import TMSquareDiffMethod
+from CustomTM import CustomTMMethod
 
-img_folder_name = "dataset1"
-temp_folder_name = "dataset1_templates/256"
-output_folder = "../results/dataset1_256/"
+img_folder_name = "dataset/dataset1"
+temp_folder_name = "dataset_alter/dataset1_templates/256/blur"
+output_folder = "../results/dataset1_blur_template_256/"
+output_name = "output_blur_template_256"
 
 img_files = {}
 img_and_temp_file = {}
@@ -32,12 +34,12 @@ create_folder(output_folder)
 
 
 #On récupère tous les images (modèle) qu'on stocke dans un dictionnaire ...
-for file in os.listdir("../storage/dataset/" + img_folder_name):
+for file in os.listdir("../storage/" + img_folder_name):
     if file.endswith(".png") or file.endswith(".jpeg"):
         img_and_temp_file[file] = []
         
 # ... et on y ajoute les templates associés     
-for file in os.listdir("../storage/dataset/" + temp_folder_name):
+for file in os.listdir("../storage/" + temp_folder_name):
     if file.endswith(".png") or file.endswith(".jpeg"):
         for img_file in img_and_temp_file:
             file_name_only = os.path.basename(img_file)[:-4]
@@ -49,14 +51,16 @@ for file in os.listdir("../storage/dataset/" + temp_folder_name):
 
 
 
-feature_based = [ SIFTMethod(), ORBMethod(), TMCoeffNormedMethod(), TMNormedCCorrMethod(), TMSquareDiffMethod() ]
+feature_based = [ SIFTMethod(), ORBMethod(),
+                 TMCoeffNormedMethod(), TMNormedCCorrMethod(), TMSquareDiffMethod(),
+                 CustomTMMethod()]
 out_csv_dict = {}
 
 for img_path_name in img_and_temp_file:
     for temp_path_name in img_and_temp_file[img_path_name]:
         
-        img_path = "../storage/dataset/" + img_folder_name +'/'+ img_path_name
-        temp_path = "../storage/dataset/" + temp_folder_name +'/'+  temp_path_name
+        img_path = "../storage/" + img_folder_name +'/'+ img_path_name
+        temp_path = "../storage/" + temp_folder_name +'/'+  temp_path_name
         
         print('Matching files : img -> ' + img_path + ' & template -> ' + temp_path)
     
@@ -71,7 +75,7 @@ for img_path_name in img_and_temp_file:
             else:
                 img_full = cv.imread(img_path,0)
                 img_temp = cv.imread(temp_path,0)
-                
+            
             f_b.set_pictures(img_full, img_temp)
             key_f_b = f_b.name 
             
@@ -85,7 +89,7 @@ for img_path_name in img_and_temp_file:
     
 
 # on écrit les résultats
-with open('../results/output.csv', 'w+', newline='') as csvfile:
+with open('../results/'+output_name+'.csv', 'w+', newline='') as csvfile:
     filewriter = csv.writer(csvfile, delimiter=';',
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
     
