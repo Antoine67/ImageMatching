@@ -8,12 +8,14 @@ import cv2 as cv
 import csv
 import os
 from SIFT import SIFTMethod
+from ORB import ORBMethod
 from TMCoeffNormed import TMCoeffNormedMethod
-
+from TMNormedCCorr import TMNormedCCorrMethod
+from TMSquareDiff import TMSquareDiffMethod
 
 img_folder_name = "dataset1"
-temp_folder_name = "dataset1_templates/128"
-output_folder = "../results/dataset1_128/"
+temp_folder_name = "dataset1_templates/256"
+output_folder = "../results/dataset1_256/"
 
 img_files = {}
 img_and_temp_file = {}
@@ -47,7 +49,7 @@ for file in os.listdir("../storage/dataset/" + temp_folder_name):
 
 
 
-feature_based = [ SIFTMethod(), TMCoeffNormedMethod()]
+feature_based = [ SIFTMethod(), ORBMethod(), TMCoeffNormedMethod(), TMNormedCCorrMethod(), TMSquareDiffMethod() ]
 out_csv_dict = {}
 
 for img_path_name in img_and_temp_file:
@@ -74,32 +76,35 @@ for img_path_name in img_and_temp_file:
             key_f_b = f_b.name 
             
             out_path = output_folder + img_path_name[:-4] + "_"+temp_path_name[:-4] +"_"+ key_f_b +".png"
-            matches, execution_time = f_b.match(out_path)
+            execution_time = f_b.match(out_path)
             
             out_csv_dict[img_path + ' ' + temp_path ][key_f_b] = {}
-            out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['nb_matches']  = matches
+            #out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['nb_matches']  = matches
             out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['execution_time']  = execution_time
                
     
 
 # on écrit les résultats
 with open('../results/output.csv', 'w+', newline='') as csvfile:
-    filewriter = csv.writer(csvfile, delimiter=',',
+    filewriter = csv.writer(csvfile, delimiter=';',
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
     
     filewriter.writerow([
+                "Image number",
                 "Picture",
                 "Method",
-                "Match count",
+                #"Match count",
                 "Execution time (s)"
             ])
-    
+    itera = 0
     for key in out_csv_dict: # filenames
+        itera+=1
         for key2 in out_csv_dict[key]: # methods (SURF, SIFT,..)
             filewriter.writerow([
+                str(itera),
                 str(key),
                 str(key2),
-                str(out_csv_dict[key][key2]['nb_matches']),
+                #str(out_csv_dict[key][key2]['nb_matches']),
                 str(out_csv_dict[key][key2]['execution_time'])
             ])
 

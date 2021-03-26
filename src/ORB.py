@@ -5,13 +5,13 @@ import time
 
 
 
-class SIFTMethod(GenericMethod):
+class ORBMethod(GenericMethod):
     
     grayscale = True
     
     def __init__(self):
-        self.name= "SIFT" 
-        self.sift = cv.xfeatures2d_SIFT.create()
+        self.name= "ORB" 
+        self.orb = cv.ORB_create()
         
         
     def match(self, output_write_path= None):
@@ -23,8 +23,8 @@ class SIFTMethod(GenericMethod):
         gray_temp = cv.cvtColor(img1,cv.COLOR_BGR2GRAY)
         gray_full = cv.cvtColor(img2,cv.COLOR_BGR2GRAY)'''
         
-        kp1, des1 = self.sift.detectAndCompute(img1,None)
-        kp2, des2 = self.sift.detectAndCompute(img2,None)
+        kp1, des1 = self.orb.detectAndCompute(img1,None)
+        kp2, des2 = self.orb.detectAndCompute(img2,None)
         
        
         # create BFMatcher object
@@ -43,5 +43,5 @@ class SIFTMethod(GenericMethod):
             plt.show()
             cv.imwrite(output_write_path,img3)
         
-        #return  execution_time
+        #return execution_time
         return time.time() - start_time

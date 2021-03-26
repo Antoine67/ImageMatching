@@ -6,12 +6,12 @@ import numpy as np
 
 
 
-class TMCoeffNormedMethod(GenericMethod):
+class TMSquareDiffMethod(GenericMethod):
     
-    tm_method = cv.TM_CCOEFF_NORMED
+    tm_method = cv.TM_SQDIFF
     
     def __init__(self):
-        self.name= "TM_CCOEFF_NORMED" 
+        self.name= "TM_SQDIFF" 
         self.sift = cv.xfeatures2d_SIFT.create()
         
         
@@ -28,7 +28,6 @@ class TMCoeffNormedMethod(GenericMethod):
         
         threshold = 0.8
         loc = np.where( res >= threshold)
-
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
 
         top_left = max_loc
