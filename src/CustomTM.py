@@ -20,6 +20,7 @@ class CustomTMMethod(GenericMethod):
     def match(self, output_write_path= None):
         start_time = time.time()
         
+        top_left, bottom_right = None, None
         
         zoomList = [ 0.8, 0.9, 1, 1.1, 1.2 ]
         resultArray = []
@@ -67,4 +68,4 @@ class CustomTMMethod(GenericMethod):
                 cv.imwrite(output_write_path, img)
         
         #return nb_matches, execution_time
-        return time.time() - start_time
+        return time.time() - start_time, top_left, bottom_right

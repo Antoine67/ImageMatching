@@ -1,30 +1,75 @@
 # Cuts random templates from images
 
-import random, os, time
-from PIL import Image
+import random, os , csv
+import cv2 as cv
 
-dx = dy = 128
-tilesPerImage = 2
+def create_folder(path):
+           try:
+               os.makedirs(path)
+           except OSError:
+               print ("Creation of the directory %s failed" % path)
+           else:
+               print ("Successfully created the directory %s" % path)
 
-INPATH = ('../storage/dataset/dataset1/')
-OUTPATH = ('../storage/dataset/dataset1_templates/'+str(dx))
+template_sizes = [128, 256] 
+tilesPerImage = 10
 
-files = os.listdir(INPATH)
-numOfImages = len(files)
-print(files)
-t = time.time()
-for file in files:
-    im = Image.open(INPATH+file)
-    for i in range(1, tilesPerImage+1):
-        newname = file.replace('.', '_{:03d}.'.format(i))
-        w, h = im.size
-        x = random.randint(0, w-dx-1)
-        y = random.randint(0, h-dy-1)
-        print("Cropping {}: {},{} -> {},{}".format(file, x,y, x+dx, y+dy))
-        im.crop((x,y, x+dx, y+dy))\
-        .save(os.path.join(OUTPATH, newname))
 
-t = time.time()-t
-print("Done {} images in {:.2f}s".format(numOfImages, t))
-print("({:.1f} images per second)".format(numOfImages/t))
-print("({:.1f} tiles per second)".format(tilesPerImage*numOfImages/t))
+
+for t_size in template_sizes:
+    
+    dx = dy = t_size
+    
+    INPATH = ('../storage/dataset/dataset1/')
+       
+    OUTPATH = (f"../storage/dataset/dataset1_templates/{dx}/")
+    create_folder(OUTPATH)
+    data_img_temp = []
+    
+    files = os.listdir(INPATH) 
+    
+    
+    for file in files: 
+        im = cv.imread(INPATH+file)
+        for i in range(1, tilesPerImage+1):
+            newname = file.replace('.', '_{:03d}.'.format(i))
+            h,w,d = im.shape
+            #print(w, h, dx, dy)
+            x = random.randint(0, w-dx-1)
+            y = random.randint(0, h-dy-1)
+            #print("Cropping {}: {},{} -> {},{}".format(file, x,y, x+dx, y+dy))
+            
+            #print('x1:',x,'y1:',y,'x2:',x+dx,'y2:',y+dy)
+            crop_img = im[y:y+dy, x:x+dx]
+            cv.imwrite(OUTPATH+newname, crop_img)
+            data_img_temp.append([file,
+                                  newname,
+                                  x, y,
+                                  x+dx, y+dy ])
+     
+    
+    
+    
+    with open(f"../results/template_creation_{t_size}.csv", 'w+', newline='') as csvfile:
+        filewriter = csv.writer(csvfile, delimiter=';',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        #headers
+        filewriter.writerow([
+                    "image",
+                    "template",
+                    "x1",
+                    "y1",
+                    "x2",
+                    "y2"
+                ])
+        
+        
+        for d in data_img_temp: # filenames
+             filewriter.writerow([
+                    d[0],
+                    d[1],
+                    d[2],
+                    d[3],
+                    d[4],
+                    d[5],
+                ])

@@ -11,37 +11,35 @@ class ORBMethod(GenericMethod):
     
     def __init__(self):
         self.name= "ORB" 
-        self.orb = cv.ORB_create()
+        self.orb = cv.ORB_create(10000, 2, 5)
         
         
     def match(self, output_write_path= None):
         start_time = time.time()
         img1 = self.img_temp
         img2 = self.img_full
-        
-        '''
-        gray_temp = cv.cvtColor(img1,cv.COLOR_BGR2GRAY)
-        gray_full = cv.cvtColor(img2,cv.COLOR_BGR2GRAY)'''
+       
         
         kp1, des1 = self.orb.detectAndCompute(img1,None)
         kp2, des2 = self.orb.detectAndCompute(img2,None)
         
-       
-        # create BFMatcher object
-        bf = cv.BFMatcher()
-        # Match descriptors.
-        matches = bf.match(des1,des2)
-        # Sort them in the order of their distance.
-        matches = sorted(matches, key = lambda x:x.distance)
         
-        #TODO Add threshold
+        FLANN_INDEX_LSH = 6
+        index_params= dict(algorithm = FLANN_INDEX_LSH,
+                           table_number = 6,
+                           key_size = 1,
+                           multi_probe_level = 1)
+        search_params=dict(checks=32)
         
-        # Draw first 10 matches.
+        matcher = cv.FlannBasedMatcher(index_params, search_params)
+
+        matches = matcher.knnMatch(des1, des2, 2)
+        
+        top_left, bottom_right, img_output = self.get_rect_feature_based(matches, kp1,kp2, img1.copy(), img2.copy())
         if(output_write_path):
-            img3 = cv.drawMatches(img1,kp1,img2,kp2,matches[:10],None,flags=cv.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-            plt.imshow(img3),
+            plt.imshow(img_output)
             plt.show()
-            cv.imwrite(output_write_path,img3)
+            cv.imwrite(output_write_path,img_output)
         
         #return execution_time
-        return time.time() - start_time
+        return time.time() - start_time, top_left, bottom_right
