@@ -24,7 +24,7 @@ class CustomTMMethod(GenericMethod):
         
         zoomList = [ 0.8, 0.9, 1, 1.1, 1.2 ]
         resultArray = []
-        THRESHOLD = 0.9
+        THRESHOLD = 0.8
         img = self.img_full
         template = self.img_temp
         
@@ -45,7 +45,7 @@ class CustomTMMethod(GenericMethod):
             
             _minVal, _maxVal, minLoc, maxLoc = cv.minMaxLoc(res)
             
-            if( _maxVal >= 0.9):
+            if( _maxVal >= THRESHOLD):
                 top_left = maxLoc
                 bottom_right = (top_left[0] + w, top_left[1] + h)
                 

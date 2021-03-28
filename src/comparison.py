@@ -18,11 +18,11 @@ from CustomTM import CustomTMMethod
 img_folder_name = "dataset_alter/dataset1"
 temp_folder_name = "dataset/dataset1_templates"
 output_name = "output"
-save_picture = False
+save_picture = True
 
 
 template_sizes = [128, 256]
-altered_types = ['normal','blur', 'zoom', 'rotation', 'noise']
+altered_types = ['zoom'] #['normal','blur', 'zoom', 'rotation', 'noise']
 
 feature_based = [ SIFTMethod(), ORBMethod(),
                   TMCoeffNormedMethod(), TMNormedCCorrMethod(), TMSquareDiffMethod(),
@@ -45,7 +45,6 @@ def isValidMatch(img_path, temp_path, top_left, bottom_right, df_template_creati
     df = df.loc[df['image'] == img_path]
     df = df.loc[df['template'] == temp_path]
     
-    print(df)
     df = df.iloc[0] # on ne garde que la première ligne match (si plusieurs)
     
     #print(top_left,bottom_right, '\n',df)
@@ -94,12 +93,14 @@ for t_size in template_sizes:
     for a_type in altered_types:
          
         if(save_picture):
-            output_folder = f"output_folder/{t_size}"
+            output_folder = f"../results/output_folder/{t_size}/"
+            create_folder("../results/output_folder")
             create_folder(output_folder)
        
         out_csv_dict = {}
         
         for img_path_name in img_and_temp_file:
+            temp_c = 0
             for temp_path_name in img_and_temp_file[img_path_name]:
                 
                 img_path = f"../storage/{img_folder_name}/{a_type}/{img_path_name}"
@@ -122,22 +123,30 @@ for t_size in template_sizes:
                     f_b.set_pictures(img_full, img_temp)
                     key_f_b = f_b.name 
                     
+                   
                     out_path = None
                     if(save_picture):
                         out_path = output_folder + img_path_name[:-4] + "_"+temp_path_name[:-4] +"_"+ key_f_b +".png"
+                        print('Saving as ', out_path)
                     
                     try:
                         execution_time, top_left, bottom_right = f_b.match(out_path)
                     except:
                         execution_time, top_left, bottom_right = None, None, None
+                        
+                    valid_match = isValidMatch(img_path_name, temp_path_name,top_left, bottom_right, df_template_creation)
+                    
                     
                     out_csv_dict[img_path + ' ' + temp_path ][key_f_b] = {}
                     #out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['nb_matches']  = matches
                     out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['execution_time']  = execution_time
                     
-                    out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['valid_match']  = isValidMatch(img_path_name, temp_path_name,top_left, bottom_right, df_template_creation)
-                   
-            
+                    out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['valid_match']  =  valid_match
+                    print("Matched ? ", valid_match)
+                    if(temp_c > 8):
+                        exit
+                    temp_c +=1
+                        
         
         # on écrit les résultats
         with open(f'../results/{output_name}_{a_type}_{t_size}.csv', 'w+', newline='') as csvfile:

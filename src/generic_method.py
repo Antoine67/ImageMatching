@@ -64,7 +64,7 @@ class GenericMethod:
         MIN_MATCH = 7
         good_matches = [m[0] for m in matches \
                             if len(m) == 2 and m[0].distance < m[1].distance * ratio]
-        print('good matches:%d/%d' %(len(good_matches),len(matches)))
+        #print('good matches:%d/%d' %(len(good_matches),len(matches)))
         
         matchesMask = np.zeros(len(good_matches)).tolist()
         res_points = [None] * 4
@@ -77,7 +77,7 @@ class GenericMethod:
             
             mtrx, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC, 5.0)
             accuracy=float(mask.sum()) / mask.size
-            print("accuracy: %d/%d(%.2f%%)"% (mask.sum(), mask.size, accuracy))
+            #print("accuracy: %d/%d(%.2f%%)"% (mask.sum(), mask.size, accuracy))
             if mask.sum() > MIN_MATCH:  
                 
                 matchesMask = mask.ravel().tolist()
