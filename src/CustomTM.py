@@ -24,7 +24,7 @@ class CustomTMMethod(GenericMethod):
         
         zoomList = [ 0.8, 0.9, 1, 1.1, 1.2 ]
         resultArray = []
-        THRESHOLD = 0.8
+        THRESHOLD = 0.6
         img = self.img_full
         template = self.img_temp
         
@@ -51,21 +51,24 @@ class CustomTMMethod(GenericMethod):
                 
                 toSave = img.copy()
                 cv.rectangle(toSave, top_left, bottom_right, 255, 2)
-                resultArray.append([ _maxVal,toSave])     
+                resultArray.append([ _maxVal,toSave, top_left, bottom_right])     
                 
         bestMatch = None
         for match in resultArray:
             if(bestMatch == None or match[0] > bestMatch[0]):
                 bestMatch = match
-            
-        if(output_write_path):
-            if(bestMatch):
+        if(bestMatch):
+            if(output_write_path):
                 plt.imshow(bestMatch[1]),
                 plt.show()
-                cv.imwrite(output_write_path,bestMatch[1])
-            else:
-                print('no match found for ', output_write_path)
+                cv.imwrite(output_write_path, bestMatch[1])
+            return time.time() - start_time, bestMatch[2], bestMatch[3]
+        else:
+            print('No match found for ', output_write_path)
+            if(output_write_path):
+                plt.imshow(bestMatch[1]),
+                plt.show()
                 cv.imwrite(output_write_path, img)
+            return time.time() - start_time, None, None
         
-        #return nb_matches, execution_time
-        return time.time() - start_time, top_left, bottom_right
+        

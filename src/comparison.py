@@ -18,15 +18,15 @@ from CustomTM import CustomTMMethod
 img_folder_name = "dataset_alter/dataset1"
 temp_folder_name = "dataset/dataset1_templates"
 output_name = "output"
-save_picture = True
+save_picture = False
 
 
-template_sizes = [128, 256]
-altered_types = ['zoom'] #['normal','blur', 'zoom', 'rotation', 'noise']
+template_sizes = [256]
+altered_types = ['rotation','normal','blur', 'zoom', 'rotation', 'noise']
 
 feature_based = [ SIFTMethod(), ORBMethod(),
-                  TMCoeffNormedMethod(), TMNormedCCorrMethod(), TMSquareDiffMethod(),
-                  CustomTMMethod()]
+                  TMCoeffNormedMethod(), TMNormedCCorrMethod(), TMSquareDiffMethod()]
+                  #CustomTMMethod()]
 
 def create_folder(path):
            try:
@@ -37,8 +37,8 @@ def create_folder(path):
                print ("Successfully created the directory %s" % path)
 
 
-ERROR_RATE_PERCENT = 1.25
-def isValidMatch(img_path, temp_path, top_left, bottom_right, df_template_creation):
+ERROR_RATE_PERCENT = 0.05
+def isValidMatch(img_path, temp_path, top_left, bottom_right, df_template_creation, method, height, width):
     df = df_template_creation.copy()
 
     # filtering data
@@ -49,11 +49,40 @@ def isValidMatch(img_path, temp_path, top_left, bottom_right, df_template_creati
     
     #print(top_left,bottom_right, '\n',df)
 
+    x1_key, y1_key, x2_key, y2_key = "x1", "y1", "x2", "y2"
+   
+    if method == 'zoom' and {'x1_zoom', 'y1_zoom', 'x2_zoom','y2_zoom'}.issubset(df_template_creation.columns):
+        x1_key, y1_key, x2_key, y2_key = 'x1_zoom', 'y1_zoom', 'x2_zoom','y2_zoom'
+    elif method == 'rotation' and {'x1_rotation', 'y1_rotation', 'x2_rotation','y2_rotation'}.issubset(df_template_creation.columns):
+        x1_key, y1_key, x2_key, y2_key = 'x1_rotation', 'y1_rotation', 'x2_rotation','y2_rotation'
+    
+        
+        
+
     try:
-        return  (top_left[0] < df.x1  * ERROR_RATE_PERCENT ) and \
-                (top_left[1] < df.y1 * ERROR_RATE_PERCENT ) and \
-                (bottom_right[0] < df.x2 * ERROR_RATE_PERCENT ) and \
-                (bottom_right[1] < df.y2 * ERROR_RATE_PERCENT ) 
+        
+        print( top_left[0], df[x1_key] ,
+                top_left[1] , df[y1_key],
+                bottom_right[0] , df[x2_key], 
+                bottom_right[1] , df[y2_key] )
+        
+        
+        '''
+        print(abs(top_left[0] - df.x1) , width * ERROR_RATE_PERCENT,
+                abs(top_left[1] - df.y1) , width * ERROR_RATE_PERCENT ,
+                abs(bottom_right[0] - df.x2) , height * ERROR_RATE_PERCENT ,
+                abs(bottom_right[1] - df.y2) , height * ERROR_RATE_PERCENT)
+        '''
+        return  abs(top_left[0] - df[x1_key]) < width * ERROR_RATE_PERCENT and \
+                abs(top_left[1] - df[y1_key]) < width * ERROR_RATE_PERCENT and \
+                abs(bottom_right[0] - df[x2_key]) < height * ERROR_RATE_PERCENT and \
+                abs(bottom_right[1] - df[y2_key]) < height * ERROR_RATE_PERCENT
+        '''
+        return  (top_left[0] < df[x1_key]  * ERROR_RATE_PERCENT ) and \
+                (top_left[1] < df[y1_key] * ERROR_RATE_PERCENT ) and \
+                (bottom_right[0] < df[x2_key] * ERROR_RATE_PERCENT ) and \
+                (bottom_right[1] < df[y2_key] * ERROR_RATE_PERCENT ) 
+        '''
     except:
         return False
 
@@ -79,7 +108,7 @@ for t_size in template_sizes:
                     img_and_temp_file[img_file].append(file)
                     
       
-    df_template_creation = pd.read_csv(f"../results/template_creation_{t_size}.csv",header=0, dtype=object,sep=';')
+    df_template_creation = pd.read_csv(f"../results/template_creation_after_pipeline_{t_size}.csv",header=0, dtype=object,sep=';')
     
     df_template_creation['image'] = df_template_creation['image'].astype(str)
     df_template_creation['template'] = df_template_creation['template'].astype(str)
@@ -88,6 +117,16 @@ for t_size in template_sizes:
     df_template_creation['y1'] = df_template_creation['y1'].astype(int)
     df_template_creation['x2'] = df_template_creation['x2'].astype(int)
     df_template_creation['y2'] = df_template_creation['y2'].astype(int)
+    
+    df_template_creation['x1_rotation'] = df_template_creation['x1_rotation'].astype(float)
+    df_template_creation['y1_rotation'] = df_template_creation['y1_rotation'].astype(float)
+    df_template_creation['x2_rotation'] = df_template_creation['x2_rotation'].astype(float)
+    df_template_creation['y2_rotation'] = df_template_creation['y2_rotation'].astype(float)
+    
+    df_template_creation['x1_zoom'] = df_template_creation['x1_zoom'].astype(float)
+    df_template_creation['y1_zoom'] = df_template_creation['y1_zoom'].astype(float)
+    df_template_creation['x2_zoom'] = df_template_creation['x2_zoom'].astype(float)
+    df_template_creation['y2_zoom'] = df_template_creation['y2_zoom'].astype(float)
        
     
     for a_type in altered_types:
@@ -134,18 +173,17 @@ for t_size in template_sizes:
                     except:
                         execution_time, top_left, bottom_right = None, None, None
                         
-                    valid_match = isValidMatch(img_path_name, temp_path_name,top_left, bottom_right, df_template_creation)
+                    valid_match = isValidMatch(img_path_name, temp_path_name,top_left, bottom_right, df_template_creation,a_type, img_full.shape[0], img_full.shape[1])
                     
+                    print("Matching :",img_path_name, temp_path_name,top_left, bottom_right, valid_match)
                     
                     out_csv_dict[img_path + ' ' + temp_path ][key_f_b] = {}
                     #out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['nb_matches']  = matches
                     out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['execution_time']  = execution_time
                     
                     out_csv_dict[img_path + ' ' + temp_path ][key_f_b]['valid_match']  =  valid_match
-                    print("Matched ? ", valid_match)
-                    if(temp_c > 8):
-                        exit
-                    temp_c +=1
+                    
+                    
                         
         
         # on écrit les résultats

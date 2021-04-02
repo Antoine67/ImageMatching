@@ -11,7 +11,7 @@ def create_folder(path):
            else:
                print ("Successfully created the directory %s" % path)
 
-template_sizes = [128, 256] 
+template_sizes = [256] 
 tilesPerImage = 10
 
 
