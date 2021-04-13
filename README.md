@@ -16,7 +16,7 @@ Bibliothèque utilisée : OpenCV
 
 [✔️] Template matching Square Diff
 
-[✔️]Template matching Normalized based
+[✔️] Template matching Normalized based
 
 [❌] CNN
 
@@ -29,10 +29,10 @@ Bibliothèque utilisée : OpenCV
 
 [✔️] Pipeline de rotation
 
-[✔️]       "              blur
+[✔️]       "     blur
 
-[✔️]       "              bruit
+[✔️]       "     bruit
 
-[✔️]       "              zoom
+[✔️]       "     zoom
 
 
