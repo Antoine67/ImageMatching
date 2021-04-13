@@ -6,7 +6,7 @@ Bibliothèque utilisée : OpenCV
  pip install opencv-contrib-python==3.4.2.16
 ```
  
- ## Méthode :
+ ## Méthodes :
  
 [✔️] SURF
 
