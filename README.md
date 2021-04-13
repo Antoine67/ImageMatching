@@ -29,10 +29,10 @@ Bibliothèque utilisée : OpenCV
 
 [✔️] Pipeline de rotation
 
-[✔️]       "     blur
+[✔️]  Pipeline de blur
 
-[✔️]       "     bruit
+[✔️] Pipeline de bruit
 
-[✔️]       "     zoom
+[✔️] Pipeline de zoom
 
 
